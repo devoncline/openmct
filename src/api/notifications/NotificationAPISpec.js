@@ -48,6 +48,12 @@ describe('The Notification API', () => {
       expect(notificationModel.severity).toEqual(severity);
     });
 
+    it('formats the timestamp with three-digit milliseconds', () => {
+      expect(notificationModel.timestamp).toMatch(
+        /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$/
+      );
+    });
+
     it('auto dismisses the notification after a brief timeout', (done) => {
       window.setTimeout(() => {
         expect(notificationAPIInstance.notifications.length).toEqual(0);
