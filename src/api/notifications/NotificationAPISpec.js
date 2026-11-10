@@ -156,6 +156,7 @@ describe('The Notification API', () => {
       expect(notification.model.progressPerc).toEqual(percentage1);
     });
 
+    
     it('allows dynamically updating the progress attributes', () => {
       notification.progress(percentage2, message2);
 
@@ -167,6 +168,20 @@ describe('The Notification API', () => {
       notification.dismiss();
 
       expect(notificationAPIInstance.notifications.length).toEqual(0);
+    });
+  });
+
+  // New tests for issue #8447
+  describe('the dismissAllNotifications method', () => {
+    it('allows new notifications after clearing all', () => {
+      const api = new NotificationAPI();
+
+      api.error('First notification');
+      api.dismissAllNotifications();
+
+      const secondNotification = api.error('Second notification');
+
+      expect(api.activeNotification).toBe(secondNotification);
     });
   });
 });
