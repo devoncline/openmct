@@ -156,7 +156,6 @@ describe('The Notification API', () => {
       expect(notification.model.progressPerc).toEqual(percentage1);
     });
 
-    
     it('allows dynamically updating the progress attributes', () => {
       notification.progress(percentage2, message2);
 
@@ -182,6 +181,24 @@ describe('The Notification API', () => {
       const secondNotification = api.error('Second notification');
 
       expect(api.activeNotification).toBe(secondNotification);
+    });
+
+    it('clears pending timers and resets notification severity', () => {
+      const api = new NotificationAPI();
+
+      api.error('First error');
+      api.info('Queued notification');
+
+      const timeout = api.activeTimeout;
+      expect(timeout).toBeDefined();
+
+      const clearTimeoutSpy = spyOn(window, 'clearTimeout').and.callThrough();
+
+      api.dismissAllNotifications();
+
+      expect(clearTimeoutSpy).toHaveBeenCalledWith(timeout);
+      expect(api.activeTimeout).toBeUndefined();
+      expect(api.highest.severity).toBe('info');
     });
   });
 });

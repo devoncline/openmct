@@ -132,7 +132,13 @@ export default class NotificationAPI extends EventEmitter {
    * Dismiss all active notifications.
    */
   dismissAllNotifications() {
+    if (this.activeTimeout) {
+      clearTimeout(this.activeTimeout);
+    }
+
     this.notifications = [];
+    this._setActiveNotification(undefined);
+    this._setHighestSeverity();
     this.emit('dismiss-all');
   }
 
